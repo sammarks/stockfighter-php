@@ -9,13 +9,13 @@ My solutions repository can be found [here](https://github.com/sammarks/stockfig
 Just install this library using Composer.
 
 ```
-$~: composer install sammarks/stockfighter
+composer install sammarks/stockfighter
 ```
 
 Or you can require it into your project using:
 
 ```
-$~: composer require --save sammarks/stockfighter
+composer require sammarks/stockfighter
 ```
 
 ## Usage

@@ -1,0 +1,20 @@
+{
+    "name": "sammarks/stockfighter",
+    "description": "A Stockfighter API Wrapper.",
+    "homepage": "https://github.com/sammarks/stockfighter-php",
+    "autoload": {
+        "psr-4": {
+            "Marks\\Stockfighter\\": "src/"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^6.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sam Marks",
+            "email": "sam@sammarks.me"
+        }
+    ]
+}

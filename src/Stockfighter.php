@@ -92,6 +92,16 @@ class Stockfighter
 	}
 
 	/**
+	 * Gets the websocket communicator for the current instance.
+	 *
+	 * @return WebSocketCommunicatorContract
+	 */
+	public function getWebSocketCommunicator()
+	{
+		return $this->websocket_communicator;
+	}
+
+	/**
 	 * Calls the heartbeat endpoint of the API.
 	 *
 	 * @return bool

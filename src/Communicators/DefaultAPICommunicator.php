@@ -108,6 +108,7 @@ class DefaultAPICommunicator implements APICommunicatorContract
 	{
 		$options['headers'] = $this->getHeaders();
 		$options['base_uri'] = $this->api_host;
+		$options['exceptions'] = false; // We handle failed requests.
 		if (!empty($data)) {
 			$options[$this->getDataKey($method)] = $data;
 		}

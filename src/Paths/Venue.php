@@ -3,6 +3,8 @@
 namespace Marks\Stockfighter\Paths;
 
 use Marks\Stockfighter\Exceptions\StockfighterException;
+use Marks\Stockfighter\Exceptions\StockfighterRequestException;
+use Marks\Stockfighter\Objects\Symbol;
 use Marks\Stockfighter\Stockfighter;
 
 class Venue extends Path
@@ -47,5 +49,24 @@ class Venue extends Path
 		} catch (StockfighterException $ex) {
 			return false;
 		}
+	}
+
+	/**
+	 * Gets an array of Symbol objects representing the stocks for the
+	 * current venue.
+	 *
+	 * @return Symbol[]
+	 */
+	public function stocks()
+	{
+		$response = $this->communicator()->get($this->endpoint('stocks'));
+		$symbols = array();
+		if (array_key_exists('symbols', $response)) {
+			foreach ($response['symbols'] as $symbol) {
+				$symbols[] = new Symbol($symbol);
+			}
+		}
+
+		return $symbols;
 	}
 }

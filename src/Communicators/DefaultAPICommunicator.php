@@ -153,6 +153,10 @@ class DefaultAPICommunicator implements APICommunicatorContract
 			throw new StockfighterRequestException($body, $response->getStatusCode());
 		}
 
+		if (!$body['ok']) {
+			throw new StockfighterRequestException($body, $response->getStatusCode(), 'Body was not OK.');
+		}
+
 		return $body;
 	}
 

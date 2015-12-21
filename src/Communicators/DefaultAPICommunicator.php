@@ -143,7 +143,7 @@ class DefaultAPICommunicator implements APICommunicatorContract
 
 	public function request($method, $endpoint, array $data = array())
 	{
-		$response = $this->client->request($method, $endpoint,
+		$response = $this->client->request($method, $this->api_prefix . $endpoint,
 			$this->getRequestOptions($method, $data));
 
 		$body = $this->getBody($response);

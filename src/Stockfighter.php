@@ -5,6 +5,7 @@ namespace Marks\Stockfighter;
 use Marks\Stockfighter\Communicators\DefaultAPICommunicator;
 use Marks\Stockfighter\Contracts\APICommunicatorContract;
 use Marks\Stockfighter\Exceptions\StockfighterException;
+use Marks\Stockfighter\Paths\Venue;
 
 class Stockfighter
 {
@@ -70,6 +71,16 @@ class Stockfighter
 	}
 
 	/**
+	 * Gets the communicator for the current instance.
+	 *
+	 * @return APICommunicatorContract
+	 */
+	public function getCommunicator()
+	{
+		return $this->communicator;
+	}
+
+	/**
 	 * Calls the heartbeat endpoint of the API.
 	 *
 	 * @return bool
@@ -78,9 +89,22 @@ class Stockfighter
 	{
 		try {
 			$response = $this->communicator->get('heartbeat');
+
 			return $response['ok'];
 		} catch (StockfighterException $ex) {
 			return false;
 		}
+	}
+
+	/**
+	 * API path for getting information about a specific venue.
+	 *
+	 * @param string $venue The name of the venue.
+	 *
+	 * @return Venue
+	 */
+	public function venue($venue)
+	{
+		return new Venue($this, $venue);
 	}
 }

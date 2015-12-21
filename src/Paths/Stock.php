@@ -36,7 +36,7 @@ class Stock extends ResourcePath
 			->post($this->endpoint('orders'), [
 				'account' => $account,
 				'price' => $price,
-				'quantity' => $quantity,
+				'qty' => $quantity,
 				'direction' => $direction,
 				'orderType' => $order_type,
 			]);

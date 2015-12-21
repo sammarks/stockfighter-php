@@ -24,7 +24,11 @@ class ResourcePath extends Path
 
 	protected function getPathPrefix()
 	{
-		$prefix = $this->parent->getPathPrefix();
+		if ($this->parent) {
+			$prefix = $this->parent->getPathPrefix();
+		} else {
+			$prefix = parent::getPathPrefix();
+		}
 		$prefix .= $this->resource_name . '/' . $this->resource_id . '/';
 
 		return $prefix;

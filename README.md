@@ -20,7 +20,61 @@ composer require sammarks/stockfighter
 
 ## Usage
 
-I have to write some code first!
+This library is setup so that it follows the URL structure of the Stockfighter API documentation
+very closely. With that said, here's an example of the library usage:
+
+```php
+use \Marks\Stockfighter\Stockfighter;
+
+// Set the API key.
+Stockfighter::setApiKey('apikey');
+
+// Create an instance of the API.
+$stockfighter = new Stockfighter();
+
+// Check if the API is working.
+$api_working = $stockfighter->heartbeat();
+
+// Check if a venue exists and is working.
+$test_working = $stockfighter->venue('test')->heartbeat();
+
+// Get all stocks in a venue.
+$stocks = $stockfighter->venue('test')->stocks();
+
+// Get information about a stock.
+$stock_info = $stockfighter->venue('test')->stock('ABCD')->info();
+
+// Order some ABCD stock.
+$order = $stockfighter->venue('test')->stock('ABCD')->order($account, $price, $quantity, $direction, $order_type);
+// Direction and Order Type have constants in the Order class, like Order::DIRECTION_BUY,
+// Order::DIRECTION_SELL, Order::TYPE_MARKET, etc.
+```
+
+### Web Sockets
+
+You can also connect and listen for quotes using WebSockets. Here's an example of that:
+
+```php
+// Create a websocket instance.
+$websocket = $this->stockfighter->getWebSocketCommunicator()->quotes($account, $venue, $stock);
+
+// Open the connection.
+$websocket->connect();
+
+// Receive quotes.
+while (true) {
+	
+	try {
+		$quote = $websocket->receive();
+		// Do stuff with the quote...
+	} catch (ConnectionException $ex) {
+		echo "Connection lost.";
+		$websocket->connect();
+		continue;
+	}
+	
+}
+```
 
 ## Contributing
 

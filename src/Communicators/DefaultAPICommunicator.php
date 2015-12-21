@@ -9,7 +9,7 @@ use Marks\Stockfighter\Exceptions\StockfighterException;
 use Marks\Stockfighter\Exceptions\StockfighterRequestException;
 use Marks\Stockfighter\Stockfighter;
 
-class DefaultAPICommunicator implements APICommunicatorContract
+class DefaultAPICommunicator extends Communicator implements APICommunicatorContract
 {
 	/**
 	 * The stockfighter instance.
@@ -43,21 +43,15 @@ class DefaultAPICommunicator implements APICommunicatorContract
 
 	public function setApiHost($host)
 	{
-		if (strpos($host, '/', strlen($host) - 1) !== false) {
-			$host = substr($host, 0, strlen($host) - 1);
-		}
+		$this->ensureNoTrailingSlash($host);
 
 		$this->api_host = $host;
 	}
 
 	public function setApiPrefix($prefix)
 	{
-		if (strpos($prefix, '/') !== 0) {
-			$prefix = '/' . $prefix;
-		}
-		if (strpos($prefix, '/', strlen($prefix) - 1) === false) {
-			$prefix .= '/';
-		}
+		$prefix = $this->ensureLeadingSlash($prefix);
+		$prefix = $this->ensureTrailingSlash($prefix);
 
 		$this->api_prefix = $prefix;
 	}

@@ -3,7 +3,9 @@
 namespace Marks\Stockfighter;
 
 use Marks\Stockfighter\Communicators\DefaultAPICommunicator;
+use Marks\Stockfighter\Communicators\DefaultWebSocketCommunicator;
 use Marks\Stockfighter\Contracts\APICommunicatorContract;
+use Marks\Stockfighter\Contracts\WebSocketCommunicatorContract;
 use Marks\Stockfighter\Exceptions\StockfighterException;
 use Marks\Stockfighter\Paths\Venue;
 
@@ -28,6 +30,12 @@ class Stockfighter
 	protected $communicator = null;
 
 	/**
+	 * The communicator class used to communicate with the websocket endpoints.
+	 * @var WebSocketCommunicatorContract
+	 */
+	protected $websocket_communicator = null;
+
+	/**
 	 * Sets the API key used for later instancing of the library.
 	 *
 	 * @param string $default_api_key The API key.
@@ -40,16 +48,19 @@ class Stockfighter
 	/**
 	 * Stockfighter constructor.
 	 *
-	 * @param string|bool             $api_key      Either the API key, or false to use
-	 *                                              the default API key.
-	 * @param APICommunicatorContract $communicator The API communicator.
+	 * @param string|bool                   $api_key                Either the API key, or false to use
+	 *                                                              the default API key.
+	 * @param APICommunicatorContract       $communicator           The API communicator.
+	 * @param WebSocketCommunicatorContract $websocket_communicator The WebSocket communicator.
 	 *
 	 * @throws StockfighterException
 	 */
-	public function __construct($api_key = false, APICommunicatorContract $communicator = null)
+	public function __construct($api_key = false, APICommunicatorContract $communicator = null, WebSocketCommunicatorContract $websocket_communicator = null)
 	{
 		// Set some defaults.
 		$this->communicator = $communicator ? $communicator : new DefaultAPICommunicator($this);
+		$this->websocket_communicator = $websocket_communicator ? $websocket_communicator :
+			new DefaultWebSocketCommunicator($this);
 
 		if (!$api_key) {
 			$this->api_key = self::$default_api_key;

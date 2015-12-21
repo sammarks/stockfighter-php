@@ -42,4 +42,17 @@ class Stock extends ResourcePath
 			]);
 		return new Order($response);
 	}
+
+	/**
+	 * Gets a quote for the current stock object.
+	 *
+	 * @return \Marks\Stockfighter\Objects\Stock
+	 */
+	public function quote()
+	{
+		$response = $this->communicator()
+			->get($this->endpoint('quote'));
+
+		return new \Marks\Stockfighter\Objects\Quote($response);
+	}
 }

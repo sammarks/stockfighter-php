@@ -3,6 +3,7 @@
 namespace Marks\Stockfighter\Paths;
 
 use Marks\Stockfighter\Objects\Order;
+use Marks\Stockfighter\Objects\Quote;
 
 class Stock extends ResourcePath
 {
@@ -46,13 +47,13 @@ class Stock extends ResourcePath
 	/**
 	 * Gets a quote for the current stock object.
 	 *
-	 * @return \Marks\Stockfighter\Objects\Stock
+	 * @return Quote
 	 */
 	public function quote()
 	{
 		$response = $this->communicator()
 			->get($this->endpoint('quote'));
 
-		return new \Marks\Stockfighter\Objects\Quote($response);
+		return new Quote($response);
 	}
 }

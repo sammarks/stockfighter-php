@@ -57,7 +57,7 @@ class DefaultWebSocketCommunicator extends Communicator implements WebSocketComm
 	 */
 	protected function buildWebSocketURL($account, $venue, $stock = false)
 	{
-		$url = $this->websocket_host . $this->websocket_prefix . '/' . $account;
+		$url = $this->websocket_host . $this->websocket_prefix . $account;
 		$url .= '/venues/' . $venue . '/tickertape';
 
 		if ($stock) {

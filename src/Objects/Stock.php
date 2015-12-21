@@ -4,17 +4,13 @@ namespace Marks\Stockfighter\Objects;
 
 class Stock extends Object
 {
+	use HasSymbol;
+
 	/**
 	 * The name of the venue.
 	 * @var string
 	 */
 	public $venue;
-
-	/**
-	 * The related symbol.
-	 * @var Symbol
-	 */
-	public $symbol;
 
 	/**
 	 * The bids associated with the stock.
@@ -41,16 +37,5 @@ class Stock extends Object
 		$this->createSymbol($object);
 		$this->bids = $this->getChildren($object['bids'], Transaction::class);
 		$this->asks = $this->getChildren($object['asks'], Transaction::class);
-	}
-
-	/**
-	 * Creates the symbol object from the passed JSON.
-	 *
-	 * @param array $object
-	 */
-	protected function createSymbol(array $object)
-	{
-		$this->symbol = new Symbol();
-		$this->symbol->name = $object['symbol'];
 	}
 }

@@ -3,37 +3,11 @@
 namespace Marks\Stockfighter\Paths;
 
 use Marks\Stockfighter\Exceptions\StockfighterException;
-use Marks\Stockfighter\Exceptions\StockfighterRequestException;
 use Marks\Stockfighter\Objects\Symbol;
-use Marks\Stockfighter\Stockfighter;
 
-class Venue extends Path
+class Venue extends ResourcePath
 {
-	/**
-	 * The name of the venue.
-	 * @var string|bool
-	 */
-	protected $venue = false;
-
-	/**
-	 * Venue constructor.
-	 *
-	 * @param Stockfighter $stockfighter
-	 * @param string       $venue The name of the venue.
-	 */
-	public function __construct(Stockfighter $stockfighter, $venue)
-	{
-		parent::__construct($stockfighter);
-		$this->venue = $venue;
-	}
-
-	protected function getPathPrefix()
-	{
-		$prefix = parent::getPathPrefix();
-		$prefix .= 'venues/' . $this->venue . '/';
-
-		return $prefix;
-	}
+	protected $resource_name = 'venues';
 
 	/**
 	 * Check to see if a specific venue is available.

@@ -13,4 +13,23 @@ class Object
 			}
 		}
 	}
+
+	/**
+	 * Given an array of children and the name of their class,
+	 * creates the objects containing those children.
+	 *
+	 * @param array  $children
+	 * @param string $child_class
+	 *
+	 * @return array
+	 */
+	protected function getChildren(array $children, $child_class)
+	{
+		$result = array();
+		foreach ($children as $child) {
+			$result[] = new $child_class($child);
+		}
+
+		return $result;
+	}
 }

@@ -12,9 +12,16 @@ abstract class Path
 	 */
 	protected $stockfighter = null;
 
-	public function __construct(Stockfighter $stockfighter)
+	/**
+	 * A reference to the parent path.
+	 * @var Path
+	 */
+	protected $parent = null;
+
+	public function __construct(Stockfighter $stockfighter, Path $parent = null)
 	{
 		$this->stockfighter = $stockfighter;
+		$this->parent = $parent;
 	}
 
 	/**

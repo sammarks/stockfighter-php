@@ -2,10 +2,9 @@
 
 namespace Marks\Stockfighter\Paths;
 
-use Marks\Stockfighter\Exceptions\StockfighterException;
 use Marks\Stockfighter\Objects\Order;
 
-class Stock extends Venue
+class Stock extends ResourcePath
 {
 	protected $resource_name = 'stocks';
 

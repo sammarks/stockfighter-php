@@ -43,4 +43,16 @@ class Venue extends ResourcePath
 
 		return $symbols;
 	}
+
+	/**
+	 * Gets the stock path object.
+	 *
+	 * @param string $stock The name of the stock.
+	 *
+	 * @return Stock
+	 */
+	public function stock($stock)
+	{
+		return new Stock($this->stockfighter, $stock, $this);
+	}
 }

@@ -9,6 +9,13 @@ class ResourcePath extends Path
 	protected $resource_id = '';
 	protected $resource_name = '';
 
+	/**
+	 * ResourcePath constructor.
+	 *
+	 * @param Stockfighter $stockfighter
+	 * @param string       $resource_id
+	 * @param Path|null    $parent
+	 */
 	public function __construct(Stockfighter $stockfighter, $resource_id, Path $parent = null)
 	{
 		parent::__construct($stockfighter, $parent);

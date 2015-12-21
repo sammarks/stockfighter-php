@@ -76,8 +76,8 @@ class DefaultAPICommunicator implements APICommunicatorContract
 			'GET' => 'query',
 			'POST' => 'json',
 		];
-		if (array_key_exists($method, $keys)) {
-			return $keys[$method];
+		if (array_key_exists(strtoupper($method), $keys)) {
+			return $keys[strtoupper($method)];
 		} else {
 			throw new StockfighterException('Method ' . $method . ' does not support sending data.');
 		}

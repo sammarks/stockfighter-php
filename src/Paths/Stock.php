@@ -31,7 +31,7 @@ class Stock extends ResourcePath
 	 *
 	 * @return Order
 	 */
-	public function order($account, $price, $quantity, $direction = Order::DIRECTION_BUY, $order_type = Order::ORDER_LIMIT)
+	public function order($account, $price, $quantity, $direction = Order::DIRECTION_BUY, $order_type = Order::ORDER_MARKET)
 	{
 		$response = $this->communicator()
 			->post($this->endpoint('orders'), [

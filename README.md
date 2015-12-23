@@ -61,6 +61,8 @@ $websocket = $this->stockfighter->getWebSocketCommunicator()->quotes($account, $
 // Set the receive callback.
 $websocket->receive(function (Quote $quote) {
 	// Do stuff with the quote...
+	// Once you're done with the websocket connection, return true
+	// from this method and the connection will be closed.
 });
 
 // Open the connection.

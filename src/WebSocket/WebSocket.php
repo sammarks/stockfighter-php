@@ -43,7 +43,7 @@ class WebSocket implements WebSocketContract
 		// Create the client (and a logger because the library requires it).
 		// Well, we might as well embrace the logger since we have to use it...
 		$this->logger = new Logger();
-		$writer = new Stream('php://output');
+		$writer = new Stream('/dev/null');
 		$this->logger->addWriter($writer);
 		$this->client = new \Devristo\Phpws\Client\WebSocket($this->url, $this->stockfighter->loop,
 			$this->logger);

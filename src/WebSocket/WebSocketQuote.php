@@ -8,6 +8,6 @@ class WebSocketQuote extends WebSocket
 {
 	protected function handleContents(array $contents)
 	{
-		return new Quote($contents);
+		return new Quote($contents['quote']);
 	}
 }

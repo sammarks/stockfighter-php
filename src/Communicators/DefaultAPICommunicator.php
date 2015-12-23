@@ -6,10 +6,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\CurlMultiHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Promise\AggregateException;
-use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\Promise\RejectionException;
-use GuzzleHttp\Psr7\Response;
 use Marks\Stockfighter\Contracts\APICommunicatorContract;
 use Marks\Stockfighter\Exceptions\StockfighterException;
 use Marks\Stockfighter\Exceptions\StockfighterRequestException;
@@ -17,7 +13,7 @@ use Marks\Stockfighter\Stockfighter;
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\TimerInterface;
+use GuzzleHttp\Promise;
 
 class DefaultAPICommunicator extends Communicator implements APICommunicatorContract
 {

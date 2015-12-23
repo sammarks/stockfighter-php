@@ -76,7 +76,7 @@ class WebSocket implements WebSocketContract
 			}
 
 			// Get the contents.
-			$contents = json_decode($message, true);
+			$contents = json_decode($message->getData(), true);
 			if (!$contents) return;
 
 			// Handle the contents.

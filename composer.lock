@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dac4175551ca25510fd67410bff42148",
-    "content-hash": "6a2d7653d8952c164c7c303babe1be4c",
+    "hash": "aba05d73323355d8d7d7b1bec0882c9b",
+    "content-hash": "84a4c3ca44bbc9d414ec341d111bb4a1",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -39,13 +39,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Devristo/phpws.git",
-                "reference": "5c495fa15555c8a4eb40c000e28ab6205d72e7f7"
+                "url": "https://github.com/rb-cohen/phpws.git",
+                "reference": "3672a4e321fc959bbcfdbdc9df8c274693b2dd06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Devristo/phpws/zipball/5c495fa15555c8a4eb40c000e28ab6205d72e7f7",
-                "reference": "5c495fa15555c8a4eb40c000e28ab6205d72e7f7",
+                "url": "https://api.github.com/repos/rb-cohen/phpws/zipball/3672a4e321fc959bbcfdbdc9df8c274693b2dd06",
+                "reference": "3672a4e321fc959bbcfdbdc9df8c274693b2dd06",
                 "shasum": ""
             },
             "require": {
@@ -61,7 +61,6 @@
                     "Devristo\\Phpws\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Devristo",
@@ -69,7 +68,10 @@
                 }
             ],
             "description": "WebSocket Server and Client library for PHP",
-            "time": "2015-07-10 14:59:37"
+            "support": {
+                "source": "https://github.com/rb-cohen/phpws/tree/master"
+            },
+            "time": "2015-12-11 11:47:44"
         },
         {
             "name": "evenement/evenement",

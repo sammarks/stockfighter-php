@@ -12,7 +12,6 @@ use Marks\Stockfighter\Exceptions\StockfighterRequestException;
 use Marks\Stockfighter\Stockfighter;
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Factory;
-use React\EventLoop\LoopInterface;
 use GuzzleHttp\Promise;
 
 class DefaultAPICommunicator extends Communicator implements APICommunicatorContract
@@ -42,12 +41,6 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 	protected $client = null;
 
 	/**
-	 * The async request event loop.
-	 * @var LoopInterface
-	 */
-	protected $loop = null;
-
-	/**
 	 * The global rejection callback when using promises.
 	 * @var callable
 	 */
@@ -59,34 +52,22 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 	 */
 	protected $global_fulfilled = null;
 
+	/**
+	 * The Curl Multi handler for Guzzle.
+	 * @var CurlMultiHandler
+	 */
+	private $handler = null;
+
 	public function __construct(Stockfighter $stockfighter)
 	{
 		$this->stockfighter = $stockfighter;
 
-		// Many, many thanks to Stephen Coakley for explaining Guzzle 6
-		// asynchronous requests:
-		// http://stephencoakley.com/2015/06/11/integrating-guzzle-6-asynchronous-requests-with-reactphp
-		//
-		// This nifty code below creates a loop that will run as soon as
-		// an async request is made, and keeps running (checking to see
-		// if the requests are complete) until there are no more requests.
-		// Once another request is introduced, the loop is restarted.
-
-		// Create a React event loop.
-		$this->loop = Factory::create();
-
 		// Create a Guzzle handler that integrates with React.
-		$handler = new CurlMultiHandler();
-		$timer = $this->loop->addPeriodicTimer(0, \Closure::bind(function () use (&$timer) {
-			$this->tick();
-			if (empty($this->handles) && Promise\queue()->isEmpty()) {
-				$timer->cancel();
-			}
-		}, $handler, $handler));
+		$this->handler = new CurlMultiHandler();
 
-		// Finally, create the Guzzle client.
+		// Create the Guzzle client.
 		$this->client = new Client([
-			'handler' => HandlerStack::create($handler),
+			'handler' => HandlerStack::create($this->handler),
 		]);
 	}
 
@@ -258,8 +239,16 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 
 		})->then($this->global_fulfilled, $this->global_rejected);
 
-		$this->loop->run();
-		return $promise; // Return the promise.
+		// Add a timer to the loop to monitor this request.
+		$timer = $this->stockfighter->loop->addPeriodicTimer(0, \Closure::bind(function () use (&$timer) {
+			$this->tick();
+			if (empty($this->handles) && Promise\queue()->isEmpty()) {
+				$timer->cancel();
+			}
+		}, $this->handler, $this->handler));
+
+		// Return the promise.
+		return $promise;
 	}
 
 	public function get($endpoint, array $data = array())

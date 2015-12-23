@@ -28,7 +28,7 @@ interface WebSocketCommunicatorContract
 	 * @param string|bool $stock   Either the symbol of the stock or false to
 	 *                             not filter by stock.
 	 *
-	 * @return WebSocketQuoteContract
+	 * @return WebSocketContract
 	 */
 	public function quotes($account, $venue, $stock = false);
 }

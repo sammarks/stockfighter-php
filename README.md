@@ -58,22 +58,13 @@ You can also connect and listen for quotes using WebSockets. Here's an example o
 // Create a websocket instance.
 $websocket = $this->stockfighter->getWebSocketCommunicator()->quotes($account, $venue, $stock);
 
+// Set the receive callback.
+$websocket->receive(function (Quote $quote) {
+	// Do stuff with the quote...
+});
+
 // Open the connection.
 $websocket->connect();
-
-// Receive quotes.
-while (true) {
-	
-	try {
-		$quote = $websocket->receive();
-		// Do stuff with the quote...
-	} catch (ConnectionException $ex) {
-		echo "Connection lost.";
-		$websocket->connect();
-		continue;
-	}
-	
-}
 ```
 
 ### Asynchronous Calling
@@ -83,7 +74,6 @@ promises. Naturally, I have included support for promises in this library. Here'
 to place an order using asynchronous calls:
 
 ```php
-
 // Assuming you already have a stockfighter instance...
 // Here's an example that places an order asynchronously.
 $stockfighter->venue('test')->stock('ABCD')->orderAsync($account, $price, $quantity, $direction,
@@ -92,7 +82,18 @@ $stockfighter->venue('test')->stock('ABCD')->orderAsync($account, $price, $quant
 	}, function (StockfighterRequestException $e) {
 		echo "Oh no, there was an error with the order! " . $e->getMessage();	
 	});
+```
 
+### Event Loop
+
+**Important Note:** If you're using either the websockets or the asynchronous calling, you'll need
+to initialize the [ReactPHP](https://github.com/reactphp) event loop. Usually this is done as the
+last call of your application (as it is a blocking method). Do all of your initialization and
+processing logic, and then call the following right before the end of your application:
+
+```php
+// Start the Event Loop.
+$stockfighter->run();
 ```
 
 ## Contributing

@@ -70,6 +70,6 @@ class DefaultWebSocketCommunicator extends Communicator implements WebSocketComm
 	public function quotes($account, $venue, $stock = false)
 	{
 		$url = $this->buildWebSocketURL($account, $venue, $stock);
-		return new WebSocketQuote($url);
+		return new WebSocketQuote($url, $this->stockfighter);
 	}
 }

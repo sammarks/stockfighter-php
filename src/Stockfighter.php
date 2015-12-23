@@ -8,6 +8,8 @@ use Marks\Stockfighter\Contracts\APICommunicatorContract;
 use Marks\Stockfighter\Contracts\WebSocketCommunicatorContract;
 use Marks\Stockfighter\Exceptions\StockfighterException;
 use Marks\Stockfighter\Paths\Venue;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 
 class Stockfighter
 {
@@ -36,6 +38,12 @@ class Stockfighter
 	protected $websocket_communicator = null;
 
 	/**
+	 * The event loop for asynchronous use.
+	 * @var LoopInterface
+	 */
+	public $loop = null;
+
+	/**
 	 * Sets the API key used for later instancing of the library.
 	 *
 	 * @param string $default_api_key The API key.
@@ -58,6 +66,7 @@ class Stockfighter
 	public function __construct($api_key = false, APICommunicatorContract $communicator = null, WebSocketCommunicatorContract $websocket_communicator = null)
 	{
 		// Set some defaults.
+		$this->loop = Factory::create();
 		$this->communicator = $communicator ? $communicator : new DefaultAPICommunicator($this);
 		$this->websocket_communicator = $websocket_communicator ? $websocket_communicator :
 			new DefaultWebSocketCommunicator($this);
@@ -127,5 +136,14 @@ class Stockfighter
 	public function venue($venue)
 	{
 		return new Venue($this, $venue);
+	}
+
+	/**
+	 * Start the React event loop (you must call this after all of your initialization
+	 * is done if you're using websockets or asynchronous requests).
+	 */
+	public function run()
+	{
+		$this->loop->run();
 	}
 }

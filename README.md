@@ -18,6 +18,16 @@ Or you can require it into your project using:
 composer require sammarks/stockfighter
 ```
 
+**Note:** If you run into problems with "Your requirements could not be resolved to an installable
+set of packages," just require the `devristo/phpws` dependency into your project. For some reason,
+composer complains about it but when added to your parent project it works fine:
+
+```
+composer require devristo/phpws "dev-master"
+```
+
+If anyone can find a solution for why this isn't working, feel free to open a PR :)
+
 ## Usage
 
 This library is setup so that it follows the URL structure of the Stockfighter API documentation

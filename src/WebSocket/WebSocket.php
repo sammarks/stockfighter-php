@@ -5,6 +5,7 @@ namespace Marks\Stockfighter\WebSocket;
 use Marks\Stockfighter\Contracts\WebSocketContract;
 use Marks\Stockfighter\Stockfighter;
 use Zend\Log\Logger;
+use Zend\Log\LoggerInterface;
 use Zend\Log\Writer\Stream;
 
 class WebSocket implements WebSocketContract
@@ -27,16 +28,24 @@ class WebSocket implements WebSocketContract
 	 */
 	protected $stockfighter = null;
 
+	/**
+	 * The Zend logger.
+	 * @var LoggerInterface
+	 */
+	protected $logger = null;
+
 	public function __construct($url, Stockfighter $stockfighter)
 	{
 		$this->url = $url;
 		$this->stockfighter = $stockfighter;
 
 		// Create the client (and a logger because the library requires it).
-		$logger = new Logger();
+		// Well, we might as well embrace the logger since we have to use it...
+		$this->logger = new Logger();
 		$writer = new Stream('php://output');
-		$logger->addWriter($writer);
-		$this->client = new \Devristo\Phpws\Client\WebSocket($this->url, $this->stockfighter->loop, $logger);
+		$this->logger->addWriter($writer);
+		$this->client = new \Devristo\Phpws\Client\WebSocket($this->url, $this->stockfighter->loop,
+			$this->logger);
 	}
 
 	public function connect()
@@ -46,6 +55,18 @@ class WebSocket implements WebSocketContract
 
 	public function receive(callable $callback)
 	{
+		$this->client->on('request', function () {
+			$this->logger->notice('Request object created!');
+		});
+
+		$this->client->on('handshake', function () {
+			$this->logger->notice('Handshake received!');
+		});
+
+		$this->client->on('connect', function () {
+			$this->logger->notice('Connected!');
+		});
+
 		$this->client->on('message', function ($message) use ($callback) {
 
 			// Get the contents.

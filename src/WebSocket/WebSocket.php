@@ -2,6 +2,7 @@
 
 namespace Marks\Stockfighter\WebSocket;
 
+use Devristo\Phpws\Messaging\WebSocketMessageInterface;
 use Marks\Stockfighter\Contracts\WebSocketContract;
 use Marks\Stockfighter\Stockfighter;
 use Zend\Log\Logger;
@@ -67,7 +68,12 @@ class WebSocket implements WebSocketContract
 			$this->logger->notice('Connected!');
 		});
 
-		$this->client->on('message', function ($message) use ($callback) {
+		$this->client->on('message', function (WebSocketMessageInterface $message) use ($callback) {
+
+			// Wait for the message to be finalized.
+			if (!$message->isFinalised()) {
+				return;
+			}
 
 			// Get the contents.
 			$contents = json_decode($message, true);

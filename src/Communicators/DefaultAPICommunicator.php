@@ -4,6 +4,8 @@ namespace Marks\Stockfighter\Communicators;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\CurlMultiHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Promise\AggregateException;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\RejectionException;
@@ -13,6 +15,9 @@ use Marks\Stockfighter\Exceptions\StockfighterException;
 use Marks\Stockfighter\Exceptions\StockfighterRequestException;
 use Marks\Stockfighter\Stockfighter;
 use Psr\Http\Message\ResponseInterface;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
+use React\EventLoop\Timer\TimerInterface;
 
 class DefaultAPICommunicator extends Communicator implements APICommunicatorContract
 {
@@ -41,6 +46,12 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 	protected $client = null;
 
 	/**
+	 * The async request event loop.
+	 * @var LoopInterface
+	 */
+	protected $loop = null;
+
+	/**
 	 * The global rejection callback when using promises.
 	 * @var callable
 	 */
@@ -55,7 +66,32 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 	public function __construct(Stockfighter $stockfighter)
 	{
 		$this->stockfighter = $stockfighter;
-		$this->client = new Client();
+
+		// Many, many thanks to Stephen Coakley for explaining Guzzle 6
+		// asynchronous requests:
+		// http://stephencoakley.com/2015/06/11/integrating-guzzle-6-asynchronous-requests-with-reactphp
+		//
+		// This nifty code below creates a loop that will run as soon as
+		// an async request is made, and keeps running (checking to see
+		// if the requests are complete) until there are no more requests.
+		// Once another request is introduced, the loop is restarted.
+
+		// Create a React event loop.
+		$loop = Factory::create();
+
+		// Create a Guzzle handler that integrates with React.
+		$handler = new CurlMultiHandler();
+		$timer = $loop->addPeriodicTimer(0, \Closure::bind(function () use (&$timer) {
+			$this->tick();
+			if (empty($this->handles) && Promise\queue()->isEmpty()) {
+				$timer->cancel();
+			}
+		}, $handler, $handler));
+
+		// Finally, create the Guzzle client.
+		$this->client = new Client([
+			'handler' => HandlerStack::create($handler),
+		]);
 	}
 
 	public function setApiHost($host)
@@ -210,7 +246,7 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 
 	public function requestAsync($method, $endpoint, array $data = array())
 	{
-		return $this->client->requestAsync($method, $this->api_prefix . $endpoint,
+		$promise = $this->client->requestAsync($method, $this->api_prefix . $endpoint,
 			$this->getRequestOptions($method, $data))->then(function (ResponseInterface $res) {
 			return $this->getBody($res);
 		}, function (RequestException $e) {
@@ -225,6 +261,9 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 			throw new StockfighterRequestException('', -1, 'Unknown error: ' . $e->getMessage());
 
 		})->then($this->global_fulfilled, $this->global_rejected);
+
+		$this->loop->run();
+		return $promise; // Return the promise.
 	}
 
 	public function get($endpoint, array $data = array())

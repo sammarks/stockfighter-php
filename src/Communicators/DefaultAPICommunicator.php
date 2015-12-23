@@ -77,11 +77,11 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 		// Once another request is introduced, the loop is restarted.
 
 		// Create a React event loop.
-		$loop = Factory::create();
+		$this->loop = Factory::create();
 
 		// Create a Guzzle handler that integrates with React.
 		$handler = new CurlMultiHandler();
-		$timer = $loop->addPeriodicTimer(0, \Closure::bind(function () use (&$timer) {
+		$timer = $this->loop->addPeriodicTimer(0, \Closure::bind(function () use (&$timer) {
 			$this->tick();
 			if (empty($this->handles) && Promise\queue()->isEmpty()) {
 				$timer->cancel();

@@ -56,7 +56,7 @@ class Stock extends ResourcePath
 	 *
 	 * @return \GuzzleHttp\Promise\PromiseInterface
 	 */
-	public function orderAsync($account, $price, $quantity, $direction = Order::DIRECTION_BUY, $order_type = Order::ORDER_MARKET)
+	public function orderAsync($account, $price, $quantity, $direction = Order::DIRECTION_BUY, $order_type = Order::ORDER_LIMIT)
 	{
 		return $this->communicator()
 			->postAsync($this->endpoint('orders'), [

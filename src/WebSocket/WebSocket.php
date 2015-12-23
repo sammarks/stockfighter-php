@@ -56,7 +56,12 @@ class WebSocket implements WebSocketContract
 			$value = $this->handleContents($contents);
 
 			// Call the callback with the value.
-			$callback($value);
+			$result = $callback($value);
+
+			// If the callback returns true, close the connection.
+			if ($result === true) {
+				$this->client->close();
+			}
 
 		});
 	}

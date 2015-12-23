@@ -26,6 +26,17 @@ composer complains about it but when added to your parent project it works fine:
 composer require devristo/phpws "dev-master"
 ```
 
+Additionally, you'll need to add this repository to your `composer.json`:
+
+```
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/rb-cohen/phpws"
+    }
+],
+```
+
 If anyone can find a solution for why this isn't working, feel free to open a PR :)
 
 ## Usage

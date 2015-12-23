@@ -76,6 +76,25 @@ while (true) {
 }
 ```
 
+### Asynchronous Calling
+
+This library uses [Guzzle](https://github.com/guzzle/guzzle) for its HTTP requests, which uses PSR-7
+promises. Naturally, I have included support for promises in this library. Here's an example of how
+to place an order using asynchronous calls:
+
+```php
+
+// Assuming you already have a stockfighter instance...
+// Here's an example that places an order asynchronously.
+$stockfighter->venue('test')->stock('ABCD')->orderAsync($account, $price, $quantity, $direction,
+	$order_type)->then(function (Order $order) {
+		echo "Oh boy, the order finished! " . $order->totalFulfilled;	
+	}, function (StockfighterRequestException $e) {
+		echo "Oh no, there was an error with the order! " . $e->getMessage();	
+	});
+
+```
+
 ## Contributing
 
 If you find an error in my Stockfighter library, or would like to improve it because you're using

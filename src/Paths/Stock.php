@@ -2,6 +2,7 @@
 
 namespace Marks\Stockfighter\Paths;
 
+use Marks\Stockfighter\Exceptions\StockfighterRequestException;
 use Marks\Stockfighter\Objects\Order;
 use Marks\Stockfighter\Objects\Quote;
 
@@ -42,6 +43,31 @@ class Stock extends ResourcePath
 				'orderType' => $order_type,
 			]);
 		return new Order($response);
+	}
+
+	/**
+	 * Creates a new order with the specified parameters (asynchronously).
+	 *
+	 * @param string $account
+	 * @param int    $price
+	 * @param int    $quantity
+	 * @param string $direction
+	 * @param string $order_type
+	 *
+	 * @return \GuzzleHttp\Promise\PromiseInterface
+	 */
+	public function orderAsync($account, $price, $quantity, $direction = Order::DIRECTION_BUY, $order_type = Order::ORDER_MARKET)
+	{
+		return $this->communicator()
+			->postAsync($this->endpoint('orders'), [
+				'account' => $account,
+				'price' => $price,
+				'qty' => $quantity,
+				'direction' => $direction,
+				'orderType' => $order_type,
+			])->then(function (array $body) {
+				return new Order($body);
+			});
 	}
 
 	/**

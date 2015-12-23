@@ -3,11 +3,16 @@
 namespace Marks\Stockfighter\Communicators;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\AggregateException;
+use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Promise\RejectionException;
 use GuzzleHttp\Psr7\Response;
 use Marks\Stockfighter\Contracts\APICommunicatorContract;
 use Marks\Stockfighter\Exceptions\StockfighterException;
 use Marks\Stockfighter\Exceptions\StockfighterRequestException;
 use Marks\Stockfighter\Stockfighter;
+use Psr\Http\Message\ResponseInterface;
 
 class DefaultAPICommunicator extends Communicator implements APICommunicatorContract
 {
@@ -35,6 +40,18 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 	 */
 	protected $client = null;
 
+	/**
+	 * The global rejection callback when using promises.
+	 * @var callable
+	 */
+	protected $global_rejected = null;
+
+	/**
+	 * The global fullfilled callback when using promises.
+	 * @var callable
+	 */
+	protected $global_fulfilled = null;
+
 	public function __construct(Stockfighter $stockfighter)
 	{
 		$this->stockfighter = $stockfighter;
@@ -44,16 +61,32 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 	public function setApiHost($host)
 	{
 		$this->ensureNoTrailingSlash($host);
-
 		$this->api_host = $host;
+
+		return $this;
 	}
 
 	public function setApiPrefix($prefix)
 	{
 		$prefix = $this->ensureLeadingSlash($prefix);
 		$prefix = $this->ensureTrailingSlash($prefix);
-
 		$this->api_prefix = $prefix;
+
+		return $this;
+	}
+
+	public function setFulfilled(callable $fulfilled)
+	{
+		$this->global_fulfilled = $fulfilled;
+
+		return $this;
+	}
+
+	public function setRejected(callable $rejected)
+	{
+		$this->global_rejected = $rejected;
+
+		return $this;
 	}
 
 	/**
@@ -114,12 +147,12 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 	 * Given a request, decodes and returns the JSON returned from the
 	 * API.
 	 *
-	 * @param Response $response
+	 * @param ResponseInterface $response
 	 *
 	 * @return array
 	 * @throws StockfighterException
 	 */
-	protected function getBody(Response $response)
+	protected function getBody(ResponseInterface $response)
 	{
 		$raw_body = $response->getBody()->getContents();
 		if (!$raw_body) {
@@ -136,22 +169,62 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 		return $body;
 	}
 
+	/**
+	 * Given a response and optionally the body, handles any possible cases
+	 * with an invalid response from the server.
+	 *
+	 * @param ResponseInterface $response
+	 * @param bool              $body
+	 *
+	 * @throws StockfighterRequestException
+	 */
+	protected function handleResponseErrors(ResponseInterface $response, $body = false)
+	{
+		if (!$body) {
+			$body = $this->getBody($response);
+		}
+
+		if ($response->getStatusCode() != 200) {
+			throw new StockfighterRequestException($body, $response->getStatusCode());
+		}
+
+		if (!is_array($body) || !array_key_exists('ok', $body)) {
+			throw new StockfighterRequestException($body, $response->getStatusCode(), 'Body is invalid.');
+		}
+
+		if (!$body['ok']) {
+			throw new StockfighterRequestException($body, $response->getStatusCode(), 'Body was not OK.');
+		}
+	}
+
 	public function request($method, $endpoint, array $data = array())
 	{
 		$response = $this->client->request($method, $this->api_prefix . $endpoint,
 			$this->getRequestOptions($method, $data));
 
 		$body = $this->getBody($response);
-
-		if ($response->getStatusCode() != 200) {
-			throw new StockfighterRequestException($body, $response->getStatusCode());
-		}
-
-		if (!$body['ok']) {
-			throw new StockfighterRequestException($body, $response->getStatusCode(), 'Body was not OK.');
-		}
+		$this->handleResponseErrors($response, $body);
 
 		return $body;
+	}
+
+	public function requestAsync($method, $endpoint, array $data = array())
+	{
+		return $this->client->requestAsync($method, $this->api_prefix . $endpoint,
+			$this->getRequestOptions($method, $data))->then(function (ResponseInterface $res) {
+			return $this->getBody($res);
+		}, function (RequestException $e) {
+
+			// See if we can simplify the exception.
+			if (!$e->hasResponse()) {
+				throw new StockfighterRequestException('', -1, 'No response from server.');
+			}
+			$this->handleResponseErrors($e->getResponse());
+
+			// Otherwise, throw a general error.
+			throw new StockfighterRequestException('', -1, 'Unknown error: ' . $e->getMessage());
+
+		})->then($this->global_fulfilled, $this->global_rejected);
 	}
 
 	public function get($endpoint, array $data = array())
@@ -159,8 +232,18 @@ class DefaultAPICommunicator extends Communicator implements APICommunicatorCont
 		return $this->request('GET', $endpoint, $data);
 	}
 
+	public function getAsync($endpoint, array $data = array())
+	{
+		return $this->requestAsync('GET', $endpoint, $data);
+	}
+
 	public function post($endpoint, array $data = array())
 	{
 		return $this->request('POST', $endpoint, $data);
+	}
+
+	public function postAsync($endpoint, array $data = array())
+	{
+		return $this->requestAsync('POST', $endpoint, $data);
 	}
 }

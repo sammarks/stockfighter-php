@@ -2,6 +2,8 @@
 
 namespace Marks\Stockfighter\Contracts;
 
+use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Promise\PromiseInterface;
 use Marks\Stockfighter\Stockfighter;
 
 interface APICommunicatorContract
@@ -13,6 +15,8 @@ interface APICommunicatorContract
 	 * to anything but the default).
 	 *
 	 * @param string $prefix
+	 *
+	 * @return $this
 	 */
 	public function setApiPrefix($prefix);
 
@@ -21,8 +25,28 @@ interface APICommunicatorContract
 	 * to anything but the default).
 	 *
 	 * @param string $host
+	 *
+	 * @return $this
 	 */
 	public function setApiHost($host);
+
+	/**
+	 * Sets the global fulfilled callback (when using promises).
+	 *
+	 * @param callable $fulfilled
+	 *
+	 * @return $this
+	 */
+	public function setFulfilled(callable $fulfilled);
+
+	/**
+	 * Sets the global rejected callback (when using promises).
+	 *
+	 * @param callable $rejected
+	 *
+	 * @return $this
+	 */
+	public function setRejected(callable $rejected);
 
 	/**
 	 * Makes a request to the server at the specified endpoint. Returns
@@ -38,6 +62,19 @@ interface APICommunicatorContract
 	public function request($method, $endpoint, array $data = array());
 
 	/**
+	 * Makes a request to the server (asynchronously) at the specified endpoint.
+	 * Returns a promise object.
+	 *
+	 * @param string $method
+	 * @param string $endpoint
+	 * @param array  $data
+	 *
+	 * @see request()
+	 * @return PromiseInterface
+	 */
+	public function requestAsync($method, $endpoint, array $data = array());
+
+	/**
 	 * Makes a GET request to the server.
 	 *
 	 * @param string $endpoint
@@ -49,6 +86,17 @@ interface APICommunicatorContract
 	public function get($endpoint, array $data = array());
 
 	/**
+	 * Makes a GET request (asynchronously) to the server.
+	 *
+	 * @param string $endpoint
+	 * @param array  $data
+	 *
+	 * @see get()
+	 * @return PromiseInterface
+	 */
+	public function getAsync($endpoint, array $data = array());
+
+	/**
 	 * Makes a POST request to the server.
 	 *
 	 * @param string $endpoint
@@ -58,4 +106,14 @@ interface APICommunicatorContract
 	 * @return mixed
 	 */
 	public function post($endpoint, array $data = array());
+
+	/**
+	 * Makes a POST request to the server (asynchronously).
+	 *
+	 * @param string $endpoint
+	 * @param array  $data
+	 *
+	 * @return PromiseInterface
+	 */
+	public function postAsync($endpoint, array $data = array());
 }

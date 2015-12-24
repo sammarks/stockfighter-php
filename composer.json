@@ -10,17 +10,13 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/rb-cohen/phpws"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/sammarks/phpws"
         }
     ],
     "require": {
         "guzzlehttp/guzzle": "^6.1",
         "react/event-loop": "^0.4.1",
-        "devristo/phpws": "dev-emit-close"
+        "devristo/phpws": "dev-emit-close-php7"
     },
     "license": "MIT",
     "authors": [

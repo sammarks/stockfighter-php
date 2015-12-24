@@ -87,8 +87,6 @@ class WebSocket implements WebSocketContract
 
 		$this->client->on('close', function () use ($should_close) {
 
-			echo "Closing\n";
-
 			// Reopen the connection.
 			if (!$should_close) {
 				$this->client->open(self::TIMEOUT);

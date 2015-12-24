@@ -2,7 +2,7 @@
 
 namespace Marks\Stockfighter\Objects;
 
-class Fill
+class Fill extends Object
 {
 	/**
 	 * The price for the fill.

@@ -31,4 +31,16 @@ interface WebSocketCommunicatorContract
 	 * @return WebSocketContract
 	 */
 	public function quotes($account, $venue, $stock = false);
+
+	/**
+	 * Gets a Web Socket contract for receiving executions (fills).
+	 *
+	 * @param string      $account The account name.
+	 * @param string      $venue   The name of the venue.
+	 * @param string|bool $stock   Either the symbol of the stock or false to
+	 *                             not filter by stock.
+	 *
+	 * @return WebSocketContract
+	 */
+	public function executions($account, $venue, $stock = false);
 }

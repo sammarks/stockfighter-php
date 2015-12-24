@@ -4,6 +4,7 @@ namespace Marks\Stockfighter\Communicators;
 
 use Marks\Stockfighter\Contracts\WebSocketCommunicatorContract;
 use Marks\Stockfighter\Stockfighter;
+use Marks\Stockfighter\WebSocket\WebSocketExecution;
 use Marks\Stockfighter\WebSocket\WebSocketQuote;
 
 class DefaultWebSocketCommunicator extends Communicator implements WebSocketCommunicatorContract
@@ -71,5 +72,11 @@ class DefaultWebSocketCommunicator extends Communicator implements WebSocketComm
 	{
 		$url = $this->buildWebSocketURL($account, $venue, $stock);
 		return new WebSocketQuote($url, $this->stockfighter);
+	}
+
+	public function executions($account, $venue, $stock = false)
+	{
+		$url = $this->buildWebSocketURL($account, $venue, $stock);
+		return new WebSocketExecution($url, $this->stockfighter);
 	}
 }

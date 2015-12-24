@@ -23,8 +23,9 @@ interface WebSocketContract
 	 * Sets the receive callback for the websocket connection.
 	 *
 	 * @param callable $callback
+	 * @param callable $error
 	 *
 	 * @return mixed
 	 */
-	public function receive(callable $callback);
+	public function receive(callable $callback, callable $error);
 }

@@ -5,12 +5,16 @@ namespace Marks\Stockfighter\WebSocket;
 use Devristo\Phpws\Messaging\WebSocketMessageInterface;
 use Marks\Stockfighter\Contracts\WebSocketContract;
 use Marks\Stockfighter\Stockfighter;
+use React\Promise\Deferred;
+use React\Promise\Promise;
 use Zend\Log\Logger;
 use Zend\Log\LoggerInterface;
 use Zend\Log\Writer\Stream;
 
 class WebSocket implements WebSocketContract
 {
+	const TIMEOUT = 10;
+
 	/**
 	 * The URL to the websocket endpoint.
 	 * @var string
@@ -51,10 +55,10 @@ class WebSocket implements WebSocketContract
 
 	public function connect()
 	{
-		$this->client->open();
+		$this->client->open(self::TIMEOUT);
 	}
 
-	public function receive(callable $callback)
+	public function receive(callable $callback, callable $error)
 	{
 		$this->client->on('request', function () {
 			$this->logger->notice('Request object created!');
@@ -66,6 +70,17 @@ class WebSocket implements WebSocketContract
 
 		$this->client->on('connect', function () {
 			$this->logger->notice('Connected!');
+		});
+
+		$this->client->on('error', function () use ($error) {
+
+			// Call the error callback.
+			$error();
+
+			// Reopen the connection.
+			$this->client->close();
+			$this->client->open(self::TIMEOUT);
+
 		});
 
 		$this->client->on('message', function (WebSocketMessageInterface $message) use ($callback) {

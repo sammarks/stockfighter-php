@@ -18,21 +18,15 @@ Or you can require it into your project using:
 composer require sammarks/stockfighter
 ```
 
-**Note:** If you run into problems with "Your requirements could not be resolved to an installable
-set of packages," just require the `devristo/phpws` dependency into your project. For some reason,
-composer complains about it but when added to your parent project it works fine:
-
-```
-composer require devristo/phpws "dev-master"
-```
-
-Additionally, you'll need to add this repository to your `composer.json`:
+**Note:** You'll also need to specify the repository settings as this package
+relies on my fork of [phpws.](https://github.com/Devristo/phpws) Add the following
+to your `composer.json`:
 
 ```
 "repositories": [
     {
         "type": "vcs",
-        "url": "https://github.com/rb-cohen/phpws"
+        "url": "https://github.com/sammarks/phpws"
     }
 ],
 ```

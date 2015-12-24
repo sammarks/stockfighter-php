@@ -72,6 +72,8 @@ class Execution extends Object
 		parent::__construct($object);
 
 		$this->createSymbol($object);
-		$this->order = new Order($object['order']);
+		if (array_key_exists('order', $object)) {
+			$this->order = new Order($object['order']);
+		}
 	}
 }

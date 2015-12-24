@@ -35,7 +35,11 @@ class Stock extends Object
 		parent::__construct($object);
 
 		$this->createSymbol($object);
-		$this->bids = $this->getChildren($object['bids'], Transaction::class);
-		$this->asks = $this->getChildren($object['asks'], Transaction::class);
+		if (array_key_exists('bids', $object)) {
+			$this->bids = $this->getChildren($object['bids'], Transaction::class);
+		}
+		if (array_key_exists('asks', $object)) {
+			$this->asks = $this->getChildren($object['asks'], Transaction::class);
+		}
 	}
 }

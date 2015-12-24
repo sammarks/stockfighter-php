@@ -90,6 +90,8 @@ class Order extends Object
 		parent::__construct($object);
 
 		$this->createSymbol($object);
-		$this->fills = $this->getChildren($object['fills'], Fill::class);
+		if (array_key_exists('fills', $object)) {
+			$this->fills = $this->getChildren($object['fills'], Fill::class);
+		}
 	}
 }

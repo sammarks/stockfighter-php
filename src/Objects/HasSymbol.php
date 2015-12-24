@@ -17,6 +17,8 @@ trait HasSymbol
 	 */
 	protected function createSymbol(array $object)
 	{
+		if (!array_key_exists('symbol', $object)) return;
+
 		$this->symbol = new Symbol();
 		$this->symbol->name = $object['symbol'];
 	}

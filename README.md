@@ -31,7 +31,12 @@ to your `composer.json`:
 ],
 ```
 
-If anyone can find a solution for why this isn't working, feel free to open a PR :)
+Additionally, because the library relies on a fork like this, you'll need to make sure
+the minimum stability of your project is set to "dev:"
+
+```
+"minimum-stability": "dev"
+```
 
 ## Usage
 

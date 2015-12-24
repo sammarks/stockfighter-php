@@ -72,8 +72,6 @@ class Execution extends Object
 		parent::__construct($object);
 
 		$this->createSymbol($object);
-		$this->symbol->name = $object['symbol'];
-
 		$this->order = new Order($object['order']);
 	}
 }

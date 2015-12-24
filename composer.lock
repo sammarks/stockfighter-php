@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "aba05d73323355d8d7d7b1bec0882c9b",
-    "content-hash": "84a4c3ca44bbc9d414ec341d111bb4a1",
+    "hash": "7a3309fc477ffd07182163574652965a",
+    "content-hash": "a0463dd0614afd400df3730118e981d0",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -36,16 +36,16 @@
         },
         {
             "name": "devristo/phpws",
-            "version": "dev-master",
+            "version": "dev-emit-close",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rb-cohen/phpws.git",
-                "reference": "3672a4e321fc959bbcfdbdc9df8c274693b2dd06"
+                "url": "https://github.com/sammarks/phpws.git",
+                "reference": "47c3b6ea546b0157f36cbe0ddb9f8a6a00769c18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rb-cohen/phpws/zipball/3672a4e321fc959bbcfdbdc9df8c274693b2dd06",
-                "reference": "3672a4e321fc959bbcfdbdc9df8c274693b2dd06",
+                "url": "https://api.github.com/repos/sammarks/phpws/zipball/47c3b6ea546b0157f36cbe0ddb9f8a6a00769c18",
+                "reference": "47c3b6ea546b0157f36cbe0ddb9f8a6a00769c18",
                 "shasum": ""
             },
             "require": {
@@ -69,9 +69,9 @@
             ],
             "description": "WebSocket Server and Client library for PHP",
             "support": {
-                "source": "https://github.com/rb-cohen/phpws/tree/master"
+                "source": "https://github.com/sammarks/phpws/tree/emit-close"
             },
-            "time": "2015-12-11 11:47:44"
+            "time": "2015-12-24 02:41:50"
         },
         {
             "name": "evenement/evenement",

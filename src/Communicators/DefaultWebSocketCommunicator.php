@@ -50,16 +50,17 @@ class DefaultWebSocketCommunicator extends Communicator implements WebSocketComm
 	/**
 	 * Builds a websocket URL given an account, venue and stock.
 	 *
+	 * @param string      $endpoint Either tickertape or executions
 	 * @param string      $account
 	 * @param string      $venue
 	 * @param string|bool $stock
 	 *
 	 * @return string
 	 */
-	protected function buildWebSocketURL($account, $venue, $stock = false)
+	protected function buildWebSocketURL($endpoint, $account, $venue, $stock = false)
 	{
 		$url = $this->websocket_host . $this->websocket_prefix . $account;
-		$url .= '/venues/' . $venue . '/tickertape';
+		$url .= '/venues/' . $venue . '/' . $endpoint;
 
 		if ($stock) {
 			$url .= '/stocks/' . $stock;
@@ -70,13 +71,13 @@ class DefaultWebSocketCommunicator extends Communicator implements WebSocketComm
 
 	public function quotes($account, $venue, $stock = false)
 	{
-		$url = $this->buildWebSocketURL($account, $venue, $stock);
+		$url = $this->buildWebSocketURL('tickertape', $account, $venue, $stock);
 		return new WebSocketQuote($url, $this->stockfighter);
 	}
 
 	public function executions($account, $venue, $stock = false)
 	{
-		$url = $this->buildWebSocketURL($account, $venue, $stock);
+		$url = $this->buildWebSocketURL('executions', $account, $venue, $stock);
 		return new WebSocketExecution($url, $this->stockfighter);
 	}
 }

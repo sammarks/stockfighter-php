@@ -60,6 +60,8 @@ class WebSocket implements WebSocketContract
 
 	public function receive(callable $callback, callable $error)
 	{
+		$should_close = false;
+
 		$this->client->on('request', function () {
 			$this->logger->notice('Request object created!');
 		});
@@ -83,7 +85,19 @@ class WebSocket implements WebSocketContract
 
 		});
 
-		$this->client->on('message', function (WebSocketMessageInterface $message) use ($callback) {
+		$this->client->on('close', function () use ($should_close) {
+
+			echo "Closing\n";
+
+			// Reopen the connection.
+			if (!$should_close) {
+				$this->client->open(self::TIMEOUT);
+			}
+
+		});
+
+		$this->client->on('message', function (WebSocketMessageInterface $message)
+			use ($callback, &$should_close) {
 
 			// Wait for the message to be finalized.
 			if (!$message->isFinalised()) {
@@ -102,6 +116,7 @@ class WebSocket implements WebSocketContract
 
 			// If the callback returns true, close the connection.
 			if ($result === true) {
+				$should_close = true;
 				$this->client->close();
 			}
 

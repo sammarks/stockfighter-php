@@ -11,12 +11,16 @@
         {
             "type": "vcs",
             "url": "https://github.com/rb-cohen/phpws"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/sammarks/phpws"
         }
     ],
     "require": {
         "guzzlehttp/guzzle": "^6.1",
         "react/event-loop": "^0.4.1",
-        "devristo/phpws": "dev-master"
+        "devristo/phpws": "dev-emit-close"
     },
     "license": "MIT",
     "authors": [

@@ -1,0 +1,22 @@
+{
+  "name": "stockfighter-php",
+  "version": "1.0.0",
+  "description": "Stockfighter API wrapper in PHP.",
+  "main": "websocket.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sammarks/stockfighter-php.git"
+  },
+  "author": "Samuel Marks <sam@sammarks.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sammarks/stockfighter-php/issues"
+  },
+  "homepage": "https://github.com/sammarks/stockfighter-php#readme",
+  "dependencies": {
+    "websocket": "^1.0.22"
+  }
+}

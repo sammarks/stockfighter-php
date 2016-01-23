@@ -7,16 +7,10 @@
             "Marks\\Stockfighter\\": "src/"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/sammarks/phpws"
-        }
-    ],
     "require": {
         "guzzlehttp/guzzle": "^6.1",
         "react/event-loop": "^0.4.1",
-        "devristo/phpws": "dev-emit-close-php7"
+        "react/child-process": "^0.4.0"
     },
     "license": "MIT",
     "authors": [

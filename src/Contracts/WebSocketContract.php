@@ -2,9 +2,10 @@
 
 namespace Marks\Stockfighter\Contracts;
 
+use Evenement\EventEmitterInterface;
 use Marks\Stockfighter\Stockfighter;
 
-interface WebSocketContract
+interface WebSocketContract extends EventEmitterInterface
 {
 	/**
 	 * WebSocketContract constructor.
@@ -18,14 +19,4 @@ interface WebSocketContract
 	 * Opens the websocket connection.
 	 */
 	public function connect();
-
-	/**
-	 * Sets the receive callback for the websocket connection.
-	 *
-	 * @param callable $callback
-	 * @param callable $error
-	 *
-	 * @return mixed
-	 */
-	public function receive(callable $callback, callable $error);
 }

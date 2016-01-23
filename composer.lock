@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7a3309fc477ffd07182163574652965a",
-    "content-hash": "a0463dd0614afd400df3730118e981d0",
+    "hash": "f86fb9031020036b735aedaba32d0e99",
+    "content-hash": "cfdcfd8ca4cc8c4500984542a36f54e4",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -33,45 +33,6 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "time": "2014-12-30 15:22:37"
-        },
-        {
-            "name": "devristo/phpws",
-            "version": "dev-emit-close",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sammarks/phpws.git",
-                "reference": "47c3b6ea546b0157f36cbe0ddb9f8a6a00769c18"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sammarks/phpws/zipball/47c3b6ea546b0157f36cbe0ddb9f8a6a00769c18",
-                "reference": "47c3b6ea546b0157f36cbe0ddb9f8a6a00769c18",
-                "shasum": ""
-            },
-            "require": {
-                "react/socket": "0.4.*",
-                "react/socket-client": "0.4.*",
-                "react/stream": "0.4.*",
-                "zendframework/zend-http": "2.*",
-                "zendframework/zend-log": "2.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Devristo\\Phpws\\": "src/"
-                }
-            },
-            "authors": [
-                {
-                    "name": "Devristo",
-                    "email": "chris@devristo.com"
-                }
-            ],
-            "description": "WebSocket Server and Client library for PHP",
-            "support": {
-                "source": "https://github.com/sammarks/phpws/tree/emit-close"
-            },
-            "time": "2015-12-24 02:41:50"
         },
         {
             "name": "evenement/evenement",
@@ -413,6 +374,47 @@
             "description": "Async caching.",
             "keywords": [
                 "cache"
+            ],
+            "time": "2014-02-02 01:11:26"
+        },
+        {
+            "name": "react/child-process",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/child-process.git",
+                "reference": "8bf211533bcbb2034e00528a47400367570dc3d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/child-process/zipball/8bf211533bcbb2034e00528a47400367570dc3d7",
+                "reference": "8bf211533bcbb2034e00528a47400367570dc3d7",
+                "shasum": ""
+            },
+            "require": {
+                "evenement/evenement": "~2.0",
+                "php": ">=5.4.0",
+                "react/event-loop": "0.4.*",
+                "react/stream": "0.4.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "React\\ChildProcess\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Library for executing child processes.",
+            "keywords": [
+                "process"
             ],
             "time": "2014-02-02 01:11:26"
         },
@@ -1160,9 +1162,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "devristo/phpws": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

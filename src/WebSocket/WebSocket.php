@@ -3,8 +3,11 @@
 namespace Marks\Stockfighter\WebSocket;
 
 use Devristo\Phpws\Messaging\WebSocketMessageInterface;
+use Evenement\EventEmitterTrait;
 use Marks\Stockfighter\Contracts\WebSocketContract;
 use Marks\Stockfighter\Stockfighter;
+use React\ChildProcess\Process;
+use React\EventLoop\Timer\Timer;
 use React\Promise\Deferred;
 use React\Promise\Promise;
 use Zend\Log\Logger;
@@ -13,6 +16,8 @@ use Zend\Log\Writer\Stream;
 
 class WebSocket implements WebSocketContract
 {
+	use EventEmitterTrait;
+
 	const TIMEOUT = 10;
 
 	/**
@@ -22,10 +27,10 @@ class WebSocket implements WebSocketContract
 	protected $url = '';
 
 	/**
-	 * The websocket client.
-	 * @var \Devristo\Phpws\Client\WebSocket
+	 * The child process instance.
+	 * @var Process
 	 */
-	protected $client = null;
+	protected $process = null;
 
 	/**
 	 * The Stockfighter instance.
@@ -33,92 +38,59 @@ class WebSocket implements WebSocketContract
 	 */
 	protected $stockfighter = null;
 
-	/**
-	 * The Zend logger.
-	 * @var LoggerInterface
-	 */
-	protected $logger = null;
-
 	public function __construct($url, Stockfighter $stockfighter)
 	{
 		$this->url = $url;
 		$this->stockfighter = $stockfighter;
 
-		// Create the client (and a logger because the library requires it).
-		// Well, we might as well embrace the logger since we have to use it...
-		$this->logger = new Logger();
-		$writer = new Stream('/dev/null');
-		$this->logger->addWriter($writer);
-		$this->client = new \Devristo\Phpws\Client\WebSocket($this->url, $this->stockfighter->loop,
-			$this->logger);
+		// Initialize the child process.
+		$this->process = new Process(__DIR__ . '/../../websocket ' . $this->url);
+		$this->process->on('exit', function ($exitCode, $termSignal) {
+			// TODO: Handle exit.
+		});
 	}
 
 	public function connect()
 	{
-		$this->client->open(self::TIMEOUT);
+		$this->stockfighter->loop->addTimer(0.001, function (Timer $timer) {
+			$this->process->start($timer->getLoop());
+			$this->process->stdout->on('data', function ($output) {
+
+				// Get the event name and emit it.
+				$space_index = strpos($output, ' ');
+				$event = substr($output, 0, $space_index);
+
+				// Add processors.
+				$message = substr($output, $space_index + 1);
+				$processor = 'process' . ucfirst($event);
+				if (method_exists($this, $processor)) {
+					if (!call_user_func_array([$this, $processor], [&$message])) {
+						return;
+					}
+				}
+
+				// Emit the message.
+				$this->emit($event, [$this, $message]);
+
+			});
+		});
 	}
 
-	public function receive(callable $callback, callable $error)
+	protected function processMessage(&$message)
 	{
-		$should_close = false;
+		// Get the contents.
+		$contents = json_decode($message, true);
+		if (!$contents) {
+			return false;
+		}
 
-		$this->client->on('request', function () {
-			$this->logger->notice('Request object created!');
-		});
+		// Handle the contents.
+		$message = $this->handleContents($contents);
+	}
 
-		$this->client->on('handshake', function () {
-			$this->logger->notice('Handshake received!');
-		});
-
-		$this->client->on('connect', function () {
-			$this->logger->notice('Connected!');
-		});
-
-		$this->client->on('error', function () use ($error) {
-
-			// Call the error callback.
-			$error();
-
-			// Reopen the connection.
-			$this->client->close();
-			$this->client->open(self::TIMEOUT);
-
-		});
-
-		$this->client->on('close', function () use ($should_close) {
-
-			// Reopen the connection.
-			if (!$should_close) {
-				$this->client->open(self::TIMEOUT);
-			}
-
-		});
-
-		$this->client->on('message', function (WebSocketMessageInterface $message)
-			use ($callback, &$should_close) {
-
-			// Wait for the message to be finalized.
-			if (!$message->isFinalised()) {
-				return;
-			}
-
-			// Get the contents.
-			$contents = json_decode($message->getData(), true);
-			if (!$contents) return;
-
-			// Handle the contents.
-			$value = $this->handleContents($contents);
-
-			// Call the callback with the value.
-			$result = $callback($value);
-
-			// If the callback returns true, close the connection.
-			if ($result === true) {
-				$should_close = true;
-				$this->client->close();
-			}
-
-		});
+	public function close()
+	{
+		$this->process->close();
 	}
 
 	/**

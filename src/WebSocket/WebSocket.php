@@ -45,6 +45,7 @@ class WebSocket implements WebSocketContract
 
 		// Initialize the child process.
 		$this->process = new Process(__DIR__ . '/../../websocket ' . $this->url);
+		echo $this->url . "\n";
 		$this->process->on('exit', function ($exitCode, $termSignal) {
 			// TODO: Handle exit.
 		});
@@ -52,27 +53,25 @@ class WebSocket implements WebSocketContract
 
 	public function connect()
 	{
-		$this->stockfighter->loop->addTimer(0.001, function (Timer $timer) {
-			$this->process->start($timer->getLoop());
-			$this->process->stdout->on('data', function ($output) {
+		$this->process->start($this->stockfighter->loop);
+		$this->process->stdout->on('data', function ($output) {
 
-				// Get the event name and emit it.
-				$space_index = strpos($output, ' ');
-				$event = substr($output, 0, $space_index);
+			// Get the event name and emit it.
+			$space_index = strpos($output, ' ');
+			$event = substr($output, 0, $space_index);
 
-				// Add processors.
-				$message = substr($output, $space_index + 1);
-				$processor = 'process' . ucfirst($event);
-				if (method_exists($this, $processor)) {
-					if (!call_user_func_array([$this, $processor], [&$message])) {
-						return;
-					}
+			// Add processors.
+			$message = trim(substr($output, $space_index + 1));
+			$processor = 'process' . ucfirst($event);
+			if (method_exists($this, $processor)) {
+				if (call_user_func_array([$this, $processor], [&$message]) === false) {
+					return;
 				}
+			}
 
-				// Emit the message.
-				$this->emit($event, [$this, $message]);
+			// Emit the message.
+			$this->emit($event, [$this, $message]);
 
-			});
 		});
 	}
 

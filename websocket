@@ -11,8 +11,10 @@ client.on('connect', function (connection) {
 	connection.on('error', function (error) {
 		console.log('error ' + error.toString());
 	});
-	connection.on('close', function () {
-		console.log('close');
+	connection.on('close', function (reasonCode, description) {
+		console.log('close ' + reasonCode.toString() + ' ' + description);
+		console.log('reconnect');
+		client.connect(process.argv[2]);
 	});
 	connection.on('message', function (message) {
 		if (message.type === 'utf8') {
